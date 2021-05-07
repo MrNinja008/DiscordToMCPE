@@ -10,6 +10,7 @@ module.exports =
     "channel": "Webhook olan kanal id'sini girin",// DEĞİŞTİR
     "talepsistem": {
         "enabled": true,
+        "quitclose": true,// Oyuncu oyundan çıkınca talep kapatılsın mı?
         "commandopen": "talepolustur",
         "commandchat": "talepgonder",
         "commandclose": "talepkapat",
