@@ -4,10 +4,10 @@ module.exports =
 // Github: https://github.com/OguzhanUmutlu/DiscordToMCPE_TR
 {
     // https://discord.com/developers sayfasından discord botu oluşturup tokenini alabilirsiniz
-    "token": "ODAwMDc3NjExMDE0Njg0NzAy.YAM4Vw.8yhpNs8ah9_l2PyB484F934S7x0",// DEĞİŞTİR
+    "token": "Discord Tokeninizi Girin",// DEĞİŞTİR
     "prefix": "/",
-    "guild": "839920222256889866",// DEĞİŞTİR
-    "channel": "840144346817101844",// DEĞİŞTİR
+    "guild": "Sunucu id'nizi girin",// DEĞİŞTİR
+    "channel": "Webhook olan kanal id'sini girin",// DEĞİŞTİR
     "talepsistem": {
         "enabled": true,
         "commandopen": "talepolustur",
@@ -16,23 +16,23 @@ module.exports =
         "commandopendesc": "Talep oluşturmanızı sağlar",
         "commandchatdesc": "Talebe mesaj göndermenizi sağlar",
         "commandclosedesc": "Talebi kapatmanızı sağlar",
-        "category": "840164568310480896"// DEĞİŞTİR
+        "category": "Talep kategorisinin id'sini girin"// DEĞİŞTİR
     },
     "vote": {
         "enabled": true,
-        "voteguild": "839920222256889866",// DEĞİŞTİR
-        "votechannel": "840256818445287465",// DEĞİŞTİR
-        "apikey": "7RJzs8YYzP6hjigTFOxgz6e8kPW1eyxXNy"// DEĞİŞTİR
+        "voteguild": "Oyların kayıt edileceği sunucu id'sini girin",// DEĞİŞTİR
+        "votechannel": "Oyların kayıt edileceği kanal id'sini girin",// DEĞİŞTİR
+        "apikey": "Sunucunun keyini girin"// DEĞİŞTİR
     },
     "server": {
         // Bağlanılacak server
-        "ip": "free1.idley.gg",// DEĞİŞTİR
-        "port": 31487,// Server portu
+        "ip": "Sunucu ipsini girin",// DEĞİŞTİR
+        "port": 19132,// Server portu
         "rcon": {
             // Rcon açık olursa ban atma gibi işlemleri yapabilirsiniz.
             // server.properties'ten de açık olması gerekir.
             "enabled": true,
-            "password": "ananinamiyanipic"// DEĞİŞTİR
+            "password": "Rcon şifresini girin."// DEĞİŞTİR
         }
     }
 }
