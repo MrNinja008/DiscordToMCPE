@@ -18,6 +18,9 @@ module.exports = (type, player, action) => {
         case "rconcommand":
             require("./RconCommandEvent")(action);
             break;
+        case "getplayers":
+            if(player)require("../../index").getClient().db.set("players", player.split(","));
+            break;
         default:
             console.log("Geçersiz event bulundu: "+type);
     }

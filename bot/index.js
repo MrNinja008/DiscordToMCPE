@@ -14,7 +14,7 @@ throw new Error("request modülünü yüklemelisin!");}
 
 const client = new Discord.Client();
 function r(t){return t;}
-let chalk = {red:r,greenBright:r,blue:r,orange:r};try{chalk = require("chalk");}catch(e){console.log("chalk modülü bulunamadı, yazılar renkli olmayacak.")}
+let chalk = {red:r,greenBright:r,blue:r,yellowBright:r};try{chalk = require("chalk");}catch(e){console.log("chalk modülü bulunamadı, yazılar renkli olmayacak.")}
 const config = require("./config.js");
 
 let db = null;try {db = require("quick.db");console.log(chalk.greenBright("Veritabanı merkezi quick.db olarak belirlendi."));} catch(e) {try {let {JsonDatabase} = require("wio.db");db = new JsonDatabase("wiodata");console.log(chalk.greenBright("Veritabanı merkezi wio.db olarak belirlendi."));} catch(e) {try {require("fs");db = require("./jsondb.js");console.log(chalk.greenBright("Veritabanı merkezi JSON(fs) olarak belirlendi."));} catch(e) {
@@ -25,25 +25,32 @@ client.chalk = chalk;
 client.config = config;
 client.request = request;
 client.currentrcon = null;
-client.setRcon=async function(ret = false){
-    if(ret)console.log(chalk.greenBright("RCON'a bağlanılıyor."));
+client.setRcon=async function(ret = false, rett = false, rettt = true){
+    if(ret)console.log(chalk.greenBright("RCON'a bağlanılıyor..."));
     try {
         let {Rcon} = require("rcon-client");
         let rcon = new Rcon({timeout: config.server.rcon.refresh,host: config.server.ip,port: config.server.port,password: config.server.rcon.password});
         try {
             await rcon.connect();
-            if(ret)console.log(chalk.greenBright("RCON'a bağlanıldı."));
+            if(ret || rett)console.log(chalk.greenBright("RCON'a bağlanıldı."));
             client.currentrcon = rcon;
             setTimeout(function(){
                 if(rcon.socket && !rcon.socket.connecting) {
                     rcon.end();
                     client.setRcon();
                 } else {
-                    console.log(chalk.orange("RCON ile olan bağlantı kesildi, geri bağlanılıyor."));
+                    console.log(chalk.yellowBright("RCON ile olan bağlantı kesildi, geri bağlanılıyor."));
                     client.setRcon(true);
                 }
             },config.server.rcon.refresh-1000)
-        }catch(e){console.log(chalk.red("Hatalı rcon şifresi girildiğinden mesaj atılamadı."))}
+        }catch(e){
+            if(e.code) {
+                if(rettt)console.log(chalk.red("Sunucu kapalı, tekrar bağlanılmaya devam edilecek ve bağlanılırsa geri dönüş yapılacak."));
+                client.setRcon(false, true, false);
+            } else {
+                console.log(chalk.red("Hatalı rcon şifresi girildi."));
+            }
+        }
     }catch(e){console.log(chalk.red("rcon-client modülü bulunamadı."))}
 }
 client.sendMessage=async function(player,message){
