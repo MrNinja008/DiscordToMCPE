@@ -33,6 +33,7 @@ module.exports =
             // Rcon açık olursa ban atma gibi işlemleri yapabilirsiniz.
             // server.properties'ten de açık olması gerekir.
             "enabled": true,
+            "refresh": 120000,// Rcon kaç milisaniyede bir yeniden bağlansın?
             "password": "Rcon şifresini girin."// DEĞİŞTİR
         }
     }
