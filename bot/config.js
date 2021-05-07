@@ -4,10 +4,10 @@ module.exports =
 // Github: https://github.com/OguzhanUmutlu/DiscordToMCPE_TR
 {
     // https://discord.com/developers sayfasından discord botu oluşturup tokenini alabilirsiniz
-    "token": "Discord botunun tokeni",// DEĞİŞTİR
+    "token": "ODAwMDc3NjExMDE0Njg0NzAy.YAM4Vw.8yhpNs8ah9_l2PyB484F934S7x0",// DEĞİŞTİR
     "prefix": "/",
-    "guild": "Sunucunuzun id'si",// DEĞİŞTİR
-    "channel": "Webhook'un kayıtlı olduğu kanal id'si",// DEĞİŞTİR
+    "guild": "839920222256889866",// DEĞİŞTİR
+    "channel": "840144346817101844",// DEĞİŞTİR
     "talepsistem": {
         "enabled": true,
         "commandopen": "talepolustur",
@@ -16,17 +16,23 @@ module.exports =
         "commandopendesc": "Talep oluşturmanızı sağlar",
         "commandchatdesc": "Talebe mesaj göndermenizi sağlar",
         "commandclosedesc": "Talebi kapatmanızı sağlar",
-        "category": "Talep kategorisinin id'si"// DEĞİŞTİR
+        "category": "840164568310480896"// DEĞİŞTİR
+    },
+    "vote": {
+        "enabled": true,
+        "voteguild": "839920222256889866",// DEĞİŞTİR
+        "votechannel": "840256818445287465",// DEĞİŞTİR
+        "apikey": "7RJzs8YYzP6hjigTFOxgz6e8kPW1eyxXNy"// DEĞİŞTİR
     },
     "server": {
         // Bağlanılacak server
-        "ip": "Server ipsi",// DEĞİŞTİR
-        "port": 19132,// Server portu
+        "ip": "free1.idley.gg",// DEĞİŞTİR
+        "port": 31487,// Server portu
         "rcon": {
             // Rcon açık olursa ban atma gibi işlemleri yapabilirsiniz.
             // server.properties'ten de açık olması gerekir.
             "enabled": true,
-            "password": "Rcon şifresi"// DEĞİŞTİR
+            "password": "ananinamiyanipic"// DEĞİŞTİR
         }
     }
 }

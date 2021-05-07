@@ -8,7 +8,9 @@ let fs = null;try {fs = require("fs");} catch(e) {
 // Eğer bu satıra atan bir hata alıyorsan alttaki yazıyı oku.
 throw new Error("fs modülünü yüklemelisin!");}
 
-
+let request = null;try {request = require("request");} catch(e) {
+// Eğer bu satıra atan bir hata alıyorsan alttaki yazıyı oku.
+throw new Error("request modülünü yüklemelisin!");}
 
 const client = new Discord.Client();
 function r(t){return t;}
@@ -21,8 +23,34 @@ throw new Error(chalk.red("wio.db, quick.db veya fs modülünü yüklemelisin!")
 client.db = db;
 client.chalk = chalk;
 client.config = config;
+client.request = request;
+
 client.on("ready", async () => {
     console.log(chalk.greenBright("Token doğrulandı, giriş yapıldı ve bot aktif edildi."));
+    let guild = client.guilds.cache.get(config.vote.voteguild);
+    if(config.vote.enabled && guild && guild.channels.cache.get(config.vote.votechannel) && guild.channels.cache.get(config.vote.votechannel).type == "text") {
+        let kanal = guild.channels.cache.get(config.vote.votechannel);
+        setInterval(function(){
+            request("https://minecraftpocket-servers.com/api/?object=servers&element=voters&key="+config.vote.apikey+"&month=current&format=json", (err,res)=>{
+                if(err) return console.log(err);
+                // Eğer bu satıra gelen bir hata verdiyse API keyiniz hatalıdır. Configden düzeltin.
+                if(res.body == "Error: server key not found") throw new Error("Geçersiz API anahtarı.");
+                let votes = JSON.parse(res.body).voters;
+                let votesLog = db.get("votes") || [];
+                votes.forEach(i=> {
+                    let index = votes.indexOf(i);
+                    if(votesLog.some(a=> a.nickname == i.nickname && a.votes > i.votes)) {
+                        votes[index] = i;
+                        kanal.send(i.nickname+" bu ay "+(i.votes+1)+". kez oy verdi!");
+                    } else if(!votesLog.some(a=> a.nickname == i.nickname)) {
+                        votes.push(i);
+                        kanal.send(i.nickname+" sunucuya oy verdi!");
+                    }
+                });
+                db.set("votes", votes);
+            })
+        }, 10000);
+    }
     if(config.talepsistem.enabled) {
         try {
             let {Rcon} = require("rcon-client");

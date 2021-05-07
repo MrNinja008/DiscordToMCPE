@@ -7,8 +7,26 @@
     "start": "node index.js"
   },
   "repository": "https://github.com/OguzhanUmutlu/DiscordToMCPE_TR",
-  "keywords": ["discord", "mcpe", "link", "connect", "command", "talep", "support", "baglanti", "komut"],
+  "keywords": [
+    "discord",
+    "mcpe",
+    "link",
+    "connect",
+    "command",
+    "talep",
+    "support",
+    "baglanti",
+    "komut"
+  ],
   "author": "OguzhanUmutlu",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "discord.js": "^12.5.3",
+    "fs": "*",
+    "mcpeping": "^0.0.3",
+    "rcon-client": "^4.2.3",
+    "request": "^2.88.2",
+    "wio.db": "^4.0.20"
+  }
 }
