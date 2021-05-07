@@ -13,7 +13,6 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\RemoteServerCommandEvent;
 use pocketmine\event\server\ServerCommandEvent;
-use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 
@@ -81,7 +80,12 @@ class DiscordToMCPE extends PluginBase implements Listener {
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
         if(!$sender instanceof RemoteConsoleCommandSender) return true;
-        if($command->getName() == "registercmd") {
+        if(!isset($args[0])) return true;
+        $this->onSubCommand($sender, $args[0], array_slice($args, 1));
+        return true;
+    }
+    public function onSubCommand(RemoteConsoleCommandSender $sender, $cmd, array $args) {
+        if($cmd == "registercmd") {
             if(isset($this->commands[(int)$args[0]])) {
                 $this->getServer()->getCommandMap()->unregister($this->commands[(int)$args[0]]);
             }
@@ -93,13 +97,14 @@ class DiscordToMCPE extends PluginBase implements Listener {
             $cnf = new Config($this->getDataFolder()."data.yml", Config::YAML, array_map(function($n){return [$n->getName(), $n->getDescription()];},$this->commands));
             $cnf->save();
             $cnf->reload();
+        } else if($cmd == "getplayers") {
+            $this->sendToDiscord("getplayers;".implode(",",array_map(function($n){return $n->getName();},$this->getServer()->getOnlinePlayers())));
         } else {
             if(!$this->getServer()->getPlayerExact($args[0])) {
                 $sender->sendMessage("notfound");
-                return true;
+                return;
             }
             $this->getServer()->getPlayerExact($args[0])->sendMessage($args[1]);
         }
-        return true;
     }
 }
