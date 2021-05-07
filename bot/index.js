@@ -24,9 +24,36 @@ client.db = db;
 client.chalk = chalk;
 client.config = config;
 client.request = request;
-
+client.currentrcon = null;
+client.setRcon=async function(ret = false){
+    if(ret)console.log(chalk.greenBright("RCON'a bağlanılıyor."));
+    try {
+        let {Rcon} = require("rcon-client");
+        let rcon = new Rcon({timeout: 120000,host: config.server.ip,port: config.server.port,password: config.server.rcon.password});
+        try {
+            await rcon.connect();
+            if(ret)console.log(chalk.greenBright("RCON'a bağlanıldı."));
+            client.currentrcon = rcon;
+            setTimeout(function(){
+                if(rcon.socket && !rcon.socket.connecting) {
+                    rcon.end();
+                    client.setRcon();
+                } else {
+                    console.log(chalk.orange("RCON ile olan bağlantı kesildi, geri bağlanılıyor."));
+                    client.setRcon(true);
+                }
+            },119000)
+        }catch(e){console.log(chalk.red("Hatalı rcon şifresi girildiğinden mesaj atılamadı."))}
+    }catch(e){console.log(chalk.red("rcon-client modülü bulunamadı."))}
+}
+client.sendMessage=async function(player,message){
+    if(!client.currentrcon) await client.setRcon();
+    if(client.currentrcon.socket && !client.currentrcon.socket.connecting)client.currentrcon.send("exrcon sendmessage \""+player +"\" \""+message+"\"");
+};
 client.on("ready", async () => {
     console.log(chalk.greenBright("Token doğrulandı, giriş yapıldı ve bot aktif edildi."));
+    await client.setRcon(true);
+    if(client.currentrcon && client.currentrcon.socket && !client.currentrcon.socket.connecting)client.currentrcon.send("exrcon getplayers");
     let guild = client.guilds.cache.get(config.vote.voteguild);
     if(config.vote.enabled && guild && guild.channels.cache.get(config.vote.votechannel) && guild.channels.cache.get(config.vote.votechannel).type == "text") {
         let kanal = guild.channels.cache.get(config.vote.votechannel);
@@ -52,18 +79,9 @@ client.on("ready", async () => {
         }, 10000);
     }
     if(config.talepsistem.enabled) {
-        try {
-            let {Rcon} = require("rcon-client");
-            let rcon = new Rcon({host: config.server.ip,port: config.server.port,password: config.server.rcon.password});
-            try {
-                rcon.connect().then(async e=>{
-                    await rcon.send("registercmd 0 \"" +config.talepsistem.commandopen+"\" \""+config.talepsistem.commandopendesc+"\"");
-                    await rcon.send("registercmd 1 \"" +config.talepsistem.commandclose+"\" \""+config.talepsistem.commandclosedesc+"\"");
-                    await rcon.send("registercmd 2 \"" +config.talepsistem.commandchat+"\" \""+config.talepsistem.commandchatdesc+"\"");
-                    rcon.end();
-                })
-            }catch(e){console.log("Hatalı rcon şifresi girildiğinden komutlar oluşturulamadı.")}
-        }catch(e){console.log("`rcon-client` modülü bulunamadı.")}
+        if(client.currentrcon && client.currentrcon.socket && !client.currentrcon.socket.connecting)client.currentrcon.send("exrcon registercmd 0 \"" +config.talepsistem.commandopen+"\" \""+config.talepsistem.commandopendesc+"\"");
+        if(client.currentrcon && client.currentrcon.socket && !client.currentrcon.socket.connecting)client.currentrcon.send("exrcon registercmd 1 \"" +config.talepsistem.commandclose+"\" \""+config.talepsistem.commandclosedesc+"\"");
+        if(client.currentrcon && client.currentrcon.socket && !client.currentrcon.socket.connecting)client.currentrcon.send("exrcon registercmd 2 \"" +config.talepsistem.commandchat+"\" \""+config.talepsistem.commandchatdesc+"\"");
     }
     client.cmds = fs.readdirSync("./commands").filter(i=> i.endsWith(".js") && typeof(require("./commands/"+i)) == "object").map(i=> {
         return {
@@ -102,16 +120,7 @@ async function talepHandler(m){
     if(talepler[0] && talepler[0].ID) {
         talepler.filter(i=> i.ID.startsWith("talep_")).forEach(i=> {
             if(i.data.channelID == m.channel.id) {
-                try {
-                    let {Rcon} = require("rcon-client");
-                    let rcon = new Rcon({host: config.server.ip,port: config.server.port,password: config.server.rcon.password});
-                    try {
-                        rcon.connect().then(async e=>{
-                            await rcon.send("taleprcon "+i.data.playerName +" \"§e§lTALEP §r§c"+m.author.tag+" §a> §b"+m.content+"\"");
-                            rcon.end();
-                        })
-                    }catch(e){m.reply("Hatalı rcon şifresi girildiğinden mesaj atılamadı.")}
-                }catch(e){m.reply("`rcon-client` modülü bulunamadı.")}
+                client.sendMessage(i.data.playerName, "§e§lTALEP §r§8[§b"+(m.member.roles.color ? m.member.roles.color.name : "")+"§8] §c"+m.author.tag+" §a> §b"+m.content);
             }
         })
     } else if(db.pin){
@@ -119,16 +128,7 @@ async function talepHandler(m){
             if(!i.startsWith("talep_")) {
                 delete talepler[i];
             } else if(talepler[i].channelID == m.channel.id) {
-                try {
-                    let {Rcon} = require("rcon-client");
-                    let rcon = new Rcon({host: config.server.ip,port: config.server.port,password: config.server.rcon.password});
-                    try {
-                        rcon.connect().then(async e=>{
-                            await rcon.send("taleprcon "+i.data.playerName +" \"§e§lTALEP §r§c"+m.author.tag+" §a> §b"+m.content+"\"");
-                            rcon.end();
-                        })
-                    }catch(e){m.reply("Hatalı rcon şifresi girildiğinden mesaj atılamadı.")}
-                }catch(e){m.reply("`rcon-client` modülü bulunamadı.")}
+                client.sendMessage(talepler[i].playerName, "§e§lTALEP §r§8[§b"+(m.member.roles.color ? m.member.roles.color.name : "")+"§8] §c"+m.author.tag+" §a> §b"+m.content);
             }
         });
     }
@@ -154,4 +154,6 @@ Bir sorun ile karşılaştırsanız bana mesaj atmaktan çekinmeyin:
 Discord: Oğuzhan#6561
 
 */
+
+
 module.exports = {getClient:function(){return client;}};
