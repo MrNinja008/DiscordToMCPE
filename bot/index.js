@@ -29,7 +29,7 @@ client.setRcon=async function(ret = false){
     if(ret)console.log(chalk.greenBright("RCON'a bağlanılıyor."));
     try {
         let {Rcon} = require("rcon-client");
-        let rcon = new Rcon({timeout: 120000,host: config.server.ip,port: config.server.port,password: config.server.rcon.password});
+        let rcon = new Rcon({timeout: config.server.rcon.refresh,host: config.server.ip,port: config.server.port,password: config.server.rcon.password});
         try {
             await rcon.connect();
             if(ret)console.log(chalk.greenBright("RCON'a bağlanıldı."));
@@ -42,7 +42,7 @@ client.setRcon=async function(ret = false){
                     console.log(chalk.orange("RCON ile olan bağlantı kesildi, geri bağlanılıyor."));
                     client.setRcon(true);
                 }
-            },119000)
+            },config.server.rcon.refresh-1000)
         }catch(e){console.log(chalk.red("Hatalı rcon şifresi girildiğinden mesaj atılamadı."))}
     }catch(e){console.log(chalk.red("rcon-client modülü bulunamadı."))}
 }
