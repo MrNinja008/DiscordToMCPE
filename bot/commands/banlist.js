@@ -12,7 +12,7 @@ module.exports = {
             });
             try {
                 rcon.connect().then(async qq => {
-                    let result = await Promise.all([rcon.send("banlist")]);
+                    let result = await Promise.all([rcon.send("banlist "+(args[0] || "players"))]);
                     let bannedplayers = result[0].split("\r\n")[1] || "Kimse";
                     await m.reply("Sunucudan uzaklaştırılmış oyuncular: " + bannedplayers);
                     rcon.end();

@@ -1,5 +1,5 @@
 {
-  "name": "DiscordToMCPE",
+  "name": "discordtomcpe",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,8 +7,8 @@
     "start": "node index.js"
   },
   "repository": "https://github.com/OguzhanUmutlu/DiscordToMCPE_TR",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["discord", "mcpe", "link", "connect", "command", "talep", "support", "baglanti", "komut"],
+  "author": "OguzhanUmutlu",
+  "license": "MIT",
   "dependencies": {}
 }
