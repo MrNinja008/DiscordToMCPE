@@ -39,6 +39,7 @@ module.exports = {
                 .addField("Sunucu aktifliği:", r.currentPlayers+"/"+r.maxPlayers, true)
                 .addField("Sunucu yazılımı:", r.advertise.split(";")[7], true)
                 .addField("Sunucu oyun modu:", r.oyunModu, true)
+                .addField("Sunucudaki aktif oyuncular:",require("../index").getClient().db.get("players").join(", "),true)
                 .setColor("#36393F")
                 .setFooter(m.author.tag+" tarafından istendi", m.author.avatarURL())
                 .setTimestamp()

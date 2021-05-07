@@ -14,7 +14,8 @@ module.exports = {
                         channel.send("Bu talep kanalı kapatıldı.\n10 saniye sonra kanal imha edilecek.");
                         setTimeout(function () { channel.delete("Talep kapatıldı.") }, 10000);
                     }
-                    client.db.delete(i.data);
+                    require("../../index").getClient().sendMessage(i.data.playerName, "§e> Talebiniz yetkili tarafından kapatıldı.")
+                    client.db.delete(i.ID);
                     a = true;
                 }
             })
@@ -29,6 +30,7 @@ module.exports = {
                         channel.send("Bu talep kanalı kapatıldı.\n10 saniye sonra kanal imha edilecek.");
                         setTimeout(function () { channel.delete("Talep kapatıldı.") }, 10000);
                     }
+                    require("../../index").getClient().sendMessage(talepler[i].playerName, "§e> Talebiniz yetkili tarafından kapatıldı.")
                     client.db.delete(i);
                     a = true;
                 }
