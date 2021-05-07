@@ -1,0 +1,15 @@
+---
+name: DiscordToMCPE
+website: https://github.com/OguzhanUmutlu/DiscordToMCPE
+api: 3.0.0
+version: 1.0.0
+main: OguzhanUmutlu\DiscordToMCPE\DiscordToMCPE
+
+commands:
+  taleprcon:
+    description: ""
+    permission: op
+  registercmd:
+    description: ""
+    permission: op
+...
