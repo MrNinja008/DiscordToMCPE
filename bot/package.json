@@ -1,0 +1,14 @@
+{
+  "name": "DiscordToMCPE",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": "https://github.com/OguzhanUmutlu/DiscordToMCPE_TR",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {}
+}
