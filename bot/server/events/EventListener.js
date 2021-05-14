@@ -1,4 +1,4 @@
-module.exports = (type, player, action) => {
+module.exports = (type, player, action, other) => {
     switch(type) {
         case "join":
             require("./PlayerJoinEvent")(player);
@@ -20,6 +20,9 @@ module.exports = (type, player, action) => {
             break;
         case "getplayers":
             if(player)require("../../index").getClient().db.set("players", player.split(","));
+            break;
+        case "death":
+            require("./PlayerDeathEvent")(player, action, other[0]);
             break;
         default:
             console.log("Geçersiz event bulundu: "+type);

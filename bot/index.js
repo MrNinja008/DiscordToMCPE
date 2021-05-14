@@ -2,7 +2,9 @@ let Discord = null;try {Discord = require("discord.js");} catch(e) {
 // Eğer bu satıra atan bir hata alıyorsan alttaki yazıyı oku.
 throw new Error("discord.js modülünü yüklemelisin!");}
 
-
+let express = null;try {express = require("express");} catch(e) {
+// Eğer bu satıra atan bir hata alıyorsan alttaki yazıyı oku.
+throw new Error("express modülünü yüklemelisin!");}
 
 let fs = null;try {fs = require("fs");} catch(e) {
 // Eğer bu satıra atan bir hata alıyorsan alttaki yazıyı oku.
@@ -25,7 +27,7 @@ client.chalk = chalk;
 client.config = config;
 client.request = request;
 client.currentrcon = null;
-client.setRcon=async function(ret = false, rett = false, rettt = true){
+client.setRcon=async function(ret = false, rett = false, rettt = true) {
     if(ret)console.log(chalk.greenBright("RCON'a bağlanılıyor..."));
     try {
         let {Rcon} = require("rcon-client");
@@ -55,7 +57,12 @@ client.setRcon=async function(ret = false, rett = false, rettt = true){
 }
 client.sendMessage=async function(player,message){
     if(!client.currentrcon) await client.setRcon();
-    if(client.currentrcon.socket && !client.currentrcon.socket.connecting)client.currentrcon.send("exrcon sendmessage \""+player +"\" \""+message+"\"");
+    if(client.currentrcon.socket && !client.currentrcon.socket.connecting) {
+        client.currentrcon.send("exrcon sendmessage \""+player +"\" \""+message+"\"");
+    } else {
+        console.log(chalk.yellowBright("RCON ile olan bağlantı kesildi, geri bağlanılıyor."));
+        client.setRcon(true);
+    }
 };
 client.on("ready", async () => {
     console.log(chalk.greenBright("Token doğrulandı, giriş yapıldı ve bot aktif edildi."));
@@ -116,9 +123,8 @@ async function onMessage(m){
 }
 
 async function onWebhookMessage(m){
-    if(m.channel.id != config.channel || !m.author.bot) return;
-    m.content = m.content.split("").slice(0,m.content.length-6).join("");
-    require("./server/events/EventListener")(m.content.split(";")[0], m.content.split(";")[1], m.content.split(";")[2]);
+    m = m.split("").slice(0,m-6).join("");
+    require("./server/events/EventListener")(m.split(";")[0], m.split(";")[1], m.split(";")[2], m.split(";").slice(3));
 }
 
 async function talepHandler(m){
@@ -143,7 +149,6 @@ async function talepHandler(m){
 
 client.on("message", async m => {
     await onMessage(m);
-    await onWebhookMessage(m);
     await talepHandler(m);
 })
 
@@ -155,6 +160,14 @@ client.login(config.token)
     } else console.error(e);
 })
 
+if(!fs.readFileSync("./key.txt").toString("utf-8")) {
+    let psb = "abcdefghijklmnoprstuvyzABCDEFGHIJKLMNOPRSTUVYZ1234567890!?=+-*/\\'\"{[()]}".split("");
+    fs.writeFileSync("./key.txt", ("0".repeat(50).split("").map(i=> psb[Math.floor(Math.random()*psb.length)]).join("")));
+    console.log(chalk.blue("Anahtar üretildi!"));
+}
+
+const key = fs.readFileSync("./key.txt").toString("utf-8");
+
 /*
 
 Bir sorun ile karşılaştırsanız bana mesaj atmaktan çekinmeyin:
@@ -162,5 +175,16 @@ Discord: Oğuzhan#6561
 
 */
 
+
+const app = express();
+
+app.get("/", (req,res) => {
+    if((new Buffer(req.query.key, "base64")).toString("utf-8") == key && req.query.message) {
+        let message = (new Buffer(req.query.message, "base64")).toString("utf-8");
+        onWebhookMessage(message);
+    }
+})
+
+app.listen(3000);
 
 module.exports = {getClient:function(){return client;}};

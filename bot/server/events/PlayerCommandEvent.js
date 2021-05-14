@@ -11,7 +11,7 @@ module.exports = async function (playerName, message) {
                     require("../../index").getClient().sendMessage(playerName, "§cZaten bir talebin var.");
                 } else {
                     require("../../index").getClient().sendMessage(playerName, "§aTalebin açılıyor...");
-                    if (require("../../index").getClient().guilds.cache.get(config.guild) && require("../../index").getClient().guilds.cache.get(config.guild).channels.cache.get(config.channel)) {
+                    if (require("../../index").getClient().guilds.cache.get(config.guild)) {
                         let guild = require("../../index").getClient().guilds.cache.get(config.guild);
                         let category = guild.channels.cache.get(config.talepsistem.category);
                         let channel = await guild.channels.create("talep-" + playerName, { type: "text", parent: category });
@@ -27,7 +27,7 @@ module.exports = async function (playerName, message) {
                 if (!require("../../index").getClient().db.get("talep_" + playerName)) {
                     require("../../index").getClient().sendMessage(playerName, "§cBir talebin yok.");
                 } else {
-                    if (require("../../index").getClient().guilds.cache.get(config.guild) && require("../../index").getClient().guilds.cache.get(config.guild).channels.cache.get(config.channel) && require("../../index").getClient().guilds.cache.get(config.guild).channels.cache.get(require("../../index").getClient().db.get("talep_" + playerName).channelID)) {
+                    if (require("../../index").getClient().guilds.cache.get(config.guild) && require("../../index").getClient().guilds.cache.get(config.guild).channels.cache.get(require("../../index").getClient().db.get("talep_" + playerName).channelID)) {
                         let guild = require("../../index").getClient().guilds.cache.get(config.guild);
                         let channel = guild.channels.cache.get(require("../../index").getClient().db.get("talep_" + playerName).channelID);
                         channel.send(playerName + " > " + params);
@@ -42,7 +42,7 @@ module.exports = async function (playerName, message) {
                 if (!require("../../index").getClient().db.get("talep_" + playerName)) {
                     require("../../index").getClient().sendMessage(playerName, "§cBir talebin yok.");
                 } else {
-                    if (require("../../index").getClient().guilds.cache.get(config.guild) && require("../../index").getClient().guilds.cache.get(config.guild).channels.cache.get(config.channel) && require("../../index").getClient().guilds.cache.get(config.guild).channels.cache.get(require("../../index").getClient().db.get("talep_" + playerName).channelID)) {
+                    if (require("../../index").getClient().guilds.cache.get(config.guild) && require("../../index").getClient().guilds.cache.get(config.guild).channels.cache.get(require("../../index").getClient().db.get("talep_" + playerName).channelID)) {
                         let guild = require("../../index").getClient().guilds.cache.get(config.guild);
                         let channel = guild.channels.cache.get(require("../../index").getClient().db.get("talep_" + playerName).channelID);
                         channel.send("Bu talep kanalı kapatıldı.\n10 saniye sonra kanal imha edilecek.");
