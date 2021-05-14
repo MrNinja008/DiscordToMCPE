@@ -7,7 +7,6 @@ module.exports =
     "token": "Discord Tokeninizi Girin",// DEĞİŞTİR
     "prefix": "/",
     "guild": "Sunucu id'nizi girin",// DEĞİŞTİR
-    "channel": "Webhook olan kanal id'sini girin",// DEĞİŞTİR
     "talepsistem": {
         "enabled": true,
         "quitclose": true,// Oyuncu oyundan çıkınca talep kapatılsın mı?
