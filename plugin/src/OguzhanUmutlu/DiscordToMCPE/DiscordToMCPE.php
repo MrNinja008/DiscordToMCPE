@@ -6,13 +6,16 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\RemoteConsoleCommandSender;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
+use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\RemoteServerCommandEvent;
 use pocketmine\event\server\ServerCommandEvent;
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 
@@ -32,46 +35,49 @@ class DiscordToMCPE extends PluginBase implements Listener {
     }
 
     public function onJoin(PlayerJoinEvent $e) {
-        $this->sendToDiscord("join;".$e->getPlayer()->getName());
+        $this->sendToHook("join;".$e->getPlayer()->getName());
     }
 
     public function onQuit(PlayerQuitEvent $e) {
-        $this->sendToDiscord("quit;".$e->getPlayer()->getName());
+        $this->sendToHook("quit;".$e->getPlayer()->getName());
     }
 
     public function onMessage(PlayerChatEvent $e) {
         if(!$e->isCancelled()) {
-            $this->sendToDiscord("chat;".$e->getPlayer()->getName().";".$e->getMessage());
+            $this->sendToHook("chat;".$e->getPlayer()->getName().";".$e->getMessage());
+        }
+    }
+
+    public function onDeath(PlayerDeathEvent $e) {
+        if(!$e->isCancelled()) {
+            $ld = $e->getPlayer()->getLastDamageCause();
+            $damager = $ld instanceof EntityDamageByEntityEvent ? ($ld->getDamager() instanceof Player ? $ld->getDamager()->getName() : "") : "";
+            $this->sendToHook("death;".$e->getPlayer()->getName().";".$damager.";".($ld ? $ld->getCause() : "-1"));
         }
     }
 
     public function onPlayerCommand(PlayerCommandPreprocessEvent $e) {
         if(!$e->isCancelled()) {
-            $start = strlen($e->getMessage())-1;
-            for($i=$start;$i>-1;$i--) {
-                if(str_split($e->getMessage())[$i] != "." && str_split($e->getMessage())[$i] != "/") {
-                    $start = $i;
-                }
-            }
-            $this->sendToDiscord("command;".$e->getPlayer()->getName().";".substr($e->getMessage(), $start));
+            if(!$e->getMessage()[0] != "/") return;
+
+            $this->sendToHook("command;".$e->getPlayer()->getName().";".substr($e->getMessage(), 1));
         }
     }
 
     public function onConsoleCommand(ServerCommandEvent $e) {
         if($e->getSender() instanceof ConsoleCommandSender && !$e->getSender() instanceof RemoteConsoleCommandSender) {
-            $this->sendToDiscord("consolecommand;CONSOLE;".$e->getCommand());
+            $this->sendToHook("consolecommand;CONSOLE;".$e->getCommand());
         }
     }
 
     public function onRconCommand(RemoteServerCommandEvent $e) {
         if ($e->getSender() instanceof RemoteConsoleCommandSender) {
-            $this->sendToDiscord("rconcommand;RCON;" . $e->getCommand());
+            $this->sendToHook("rconcommand;RCON;" . $e->getCommand());
         }
     }
-    public function sendToDiscord($b): ?string {
+    public function sendToHook($b): ?string {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->getConfig()->getNested("webhook-url", "Sadece botun görebildiği kanaldaki webhook URL'sini buraya girin."));
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode(["content" => $b." ** **", "username" => $this->getConfig()->getNested("webhook-name", "Sadece botun görebildiği kanaldaki webhook adını buraya girin.")]));
+        curl_setopt($curl, CURLOPT_URL, $this->getConfig()->getNested("host").":3000?message=".base64_encode($b)."&key=".$this->getConfig()->getNested("key"));
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -98,7 +104,9 @@ class DiscordToMCPE extends PluginBase implements Listener {
             $cnf->save();
             $cnf->reload();
         } else if($cmd == "getplayers") {
-            $this->sendToDiscord("getplayers;".implode(",",array_map(function($n){return $n->getName();},$this->getServer()->getOnlinePlayers())));
+            $this->sendToHook("getplayers;".implode(",",array_map(function($n){return $n->getName();},$this->getServer()->getOnlinePlayers())));
+        } else if($cmd == "broadcast") {
+            $this->getServer()->broadcastMessage($args[0]);
         } else {
             if(!$this->getServer()->getPlayerExact($args[0])) {
                 $sender->sendMessage("notfound");
