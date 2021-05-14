@@ -77,7 +77,7 @@ class DiscordToMCPE extends PluginBase implements Listener {
     }
     public function sendToHook($b): ?string {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->getConfig()->getNested("host").":3000?message=".base64_encode($b)."&key=".$this->getConfig()->getNested("key"));
+        curl_setopt($curl, CURLOPT_URL, $this->getConfig()->getNested("host").":3000?message=".base64_encode($b)."&key=".base64_encode($this->getConfig()->getNested("key")));
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
