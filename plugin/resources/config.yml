@@ -1,4 +1,5 @@
 ---
-webhook-url: "Sadece botun görebildiği kanaldaki webhook URL'sini buraya girin."
-webhook-name: "Sadece botun görebildiği kanaldaki webhook adını buraya girin."
+host: "Botun bulunduğu yerin IP adresi."
+key: "Botu 1 kere aktif edip kapatırsanız key.txt'ye bir anahtar koyacak onu buraya yazın."
+# Başında http:// veya https:// olduğundan emin olun
 ...
