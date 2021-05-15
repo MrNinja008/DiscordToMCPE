@@ -75,7 +75,7 @@ client.on("ready", async () => {
             request("https://minecraftpocket-servers.com/api/?object=servers&element=voters&key="+config.vote.apikey+"&month=current&format=json", (err,res)=>{
                 if(err) return console.log(err);
                 // Eğer bu satıra gelen bir hata verdiyse API keyiniz hatalıdır. Configden düzeltin.
-                if(res.body == "Error: server key not found") throw new Error("Geçersiz API anahtarı.");
+                if(res.body == "Error: server key not found" || res.body == "Error: invalid server key") throw new Error("Geçersiz API anahtarı.");
                 let votes = JSON.parse(res.body).voters;
                 let votesLog = db.get("votes") || [];
                 votes.forEach(i=> {
