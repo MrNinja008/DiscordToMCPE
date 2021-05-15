@@ -21,6 +21,23 @@ module.exports = function(playerName, killerName, cause){
 	STARVATION = 15;
     */
     let client = require("../../index").getClient();
+	let config = require("../../config");
+
+    if(config.logger.playerdeath.enabled) {
+        let guild = client.guilds.cache.get(config.logger.playerdeath.channel.guildID);
+        if(guild) {
+            let channel = guild.channels.cache.get(config.logger.playerdeath.channel.channelID);
+            if(channel) {
+				if(killerName && cause == 1) {
+					channel.send(config.logger.playerdeath.messages.byPlayer.replace(/{player}/g, playerName).replace(/{killer}/g, killerName));
+				} else if(cause == -1) {
+					channel.send(config.logger.playerdeath.messages.nothing.replace(/{player}/g, playerName));
+				} else {
+					channel.send(config.logger.playerdeath.messages.forReason[cause].replace(/{player}/g, playerName));
+				}
+            } else console.log(client.chalk.red("config.logger.playerdeath.channel.channelID'deki kanal sunucuda bulunamadı."));
+        } else console.log(client.chalk.red("config.logger.playerdeath.channel.guildID'deki sunucu bulunamadı."));
+    }
     if(killerName && cause == 1) {
         // playerName, killerName tarafından öldürüldü.
     } else if(cause == -1) {

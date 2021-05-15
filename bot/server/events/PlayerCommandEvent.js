@@ -1,5 +1,16 @@
 module.exports = async function (playerName, message) {
     let config = require("../../config");
+    let client = require("../../index").getClient();
+
+    if(config.logger.playercommand.enabled) {
+        let guild = client.guilds.cache.get(config.logger.playercommand.channel.guildID);
+        if(guild) {
+            let channel = guild.channels.cache.get(config.logger.playercommand.channel.channelID);
+            if(channel) {
+                channel.send(config.logger.playercommand.message.replace(/{player}/g, playerName).replace(/{command}/g, message));
+            } else console.log(client.chalk.red("config.logger.playercommand.channel.channelID'deki kanal sunucuda bulunamadı."));
+        } else console.log(client.chalk.red("config.logger.playercommand.channel.guildID'deki sunucu bulunamadı."));
+    }
     if (config.talepsistem && ([config.talepsistem.commandopen, config.talepsistem.commandchat, config.talepsistem.commandclose].includes(message.split(" ")[0]))) {
         let rcon = require("../../index").getClient().currentrcon;
         if (!rcon) return;
