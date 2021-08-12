@@ -1,5 +1,5 @@
 ---
-host: "Botun bulunduğu yerin IP adresi."
-key: "Botu 1 kere aktif edip kapatırsanız key.txt'ye bir anahtar koyacak onu buraya yazın."
-# Başında http:// veya https:// olduğundan emin olun
+host: "IP address of the bot location."
+key: "If you activate and close the bot once, it will put a key in the key.txt, write it here." 
+#Make sure you have http:// or https:// at the beginning
 ...
