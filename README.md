@@ -1,6 +1,3 @@
-# DiscordToMCPE_TR
-DiscordToMCPE (Türkçe)
-
-
-Kodu çalıp paylaşanların başına gelecekler:
-- Beddua
+# DiscordToMCPE
+A Discord Bot To Implement Discord To MCPE For 
+Pocketmine Made By Oguchan with ❤️
