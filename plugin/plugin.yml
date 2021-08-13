@@ -8,5 +8,5 @@ main: OguzhanUmutlu\DiscordToMCPE\DiscordToMCPE
 commands:
   exrcon:
     description: ""
-    permission: op
+    permission: o
 ...
